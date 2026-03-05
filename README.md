@@ -130,15 +130,10 @@ flowchart TB
   classDef source fill:#f2ecfb,stroke:#7040b0,color:#2d174b,stroke-width:1.2px;
 
   Dev[Operator / CI]:::actor --> Make[Make targets]:::control
-  Make --> Deploy[ansible/playbooks/deploy-env.yml]:::control
-  Deploy --> EnvCommon[playbooks/tasks/env_common.yml]:::control
-  EnvCommon --> TF[Terraform env + modules]:::infra
-  TF --> Inventory[add_host dynamic inventory]:::control
-  Inventory --> Site[ansible/site.yml]:::control
-  Site --> Roles[roles: common, security, tailscale, k3s, flux, pocketbase]:::control
-  Roles --> K3s[K3s cluster nodes]:::runtime
+  Make --> Provision[Terraform + Ansible provisioning]:::infra
+  Provision --> K3s[K3s cluster nodes]:::runtime
 
-  Repo[Git source of truth\nk8s-gitops/base + overlays/<env>]:::source --> Flux[Flux controllers\nGitRepository + Kustomization]:::runtime
+  Repo[Git source of truth<br/>k8s-gitops/base + overlays/&lt;env&gt;]:::source --> Flux[Flux controllers<br/>GitRepository + Kustomization]:::runtime
   Flux --> K3s
   K3s --> Workloads[Namespaces, platform services, app deployments, ingress]:::runtime
 ```
